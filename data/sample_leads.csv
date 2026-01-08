@@ -1,0 +1,4 @@
+source,lead_id,owner_name,owner_email,owner_phone,property_address,property_city,property_state,property_zip,estimated_arv,estimated_mortgage_balance,estimated_repairs,distress_signals,occupancy,notes
+csv,LD-001,Jordan Smith,jordan.smith@example.com,+15551230001,123 Oak St,Dallas,TX,75201,325000,210000,35000,"absentee_owner;code_violations",vacant,"Pulled from public records export; verify condition"
+csv,LD-002,Casey Lee,casey.lee@example.com,+15551230002,88 Pine Ave,Dallas,TX,75204,410000,390000,15000,"recent_divorce",owner_occupied,"Low equity likely; may be a retail candidate instead"
+csv,LD-003,Pat Taylor,,+15551230003,9 Elm Dr,Irving,TX,75038,280000,120000,60000,"tax_delinquent;absentee_owner",tenant_occupied,"Possible high equity; tenant situation adds complexity"

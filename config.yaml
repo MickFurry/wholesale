@@ -1,0 +1,55 @@
+app:
+  db_path: ./data/wholesale.db
+  timezone: UTC
+  dry_run: true
+
+market:
+  # Used for templates + heuristics. Keep generic if operating across states.
+  state: "TX"
+  city: "Dallas"
+  county: "Dallas"
+
+lead_sources:
+  # IMPORTANT: This MVP does NOT scrape MLS or sites with restrictive ToS.
+  # Start by importing leads from your existing lists or public records exports.
+  csv_import:
+    enabled: true
+    paths:
+      - ./data/sample_leads.csv
+
+scoring:
+  # Higher score = higher priority to pursue first.
+  weights:
+    equity: 0.40
+    distress: 0.25
+    contactability: 0.20
+    simplicity: 0.15
+  thresholds:
+    pursue_now: 0.72
+    nurture: 0.50
+
+outreach:
+  # Guardrails
+  require_opt_out: true
+  block_if_missing_owner_name: true
+  respect_dnc: true
+  daily_send_limit: 50
+
+  channels:
+    email:
+      enabled: true
+      send_live: false
+      templates:
+        first_touch: wholesale/templates/email_first_touch.j2
+        follow_up_1: wholesale/templates/email_follow_up_1.j2
+    sms:
+      enabled: false
+      send_live: false
+      templates:
+        first_touch: wholesale/templates/sms_first_touch.j2
+
+wholesale_process:
+  # Simple guardrails so the system doesn't “practice law”.
+  generate_documents:
+    enabled: true
+    disclaimer: "Not legal advice. Use state-approved forms and consult a qualified attorney or broker for your jurisdiction."
