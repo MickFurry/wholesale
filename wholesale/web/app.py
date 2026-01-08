@@ -68,21 +68,30 @@ def create_app(config_path: str | None = None) -> FastAPI:
         with db.connect(cfg.app.db_path) as con:
             db.init_db(con)
             top = _db_rows_to_dicts(db.top_opportunities(con, limit=20))
-        return templates.TemplateResponse("partials/top.html", {"request": request, "top": top})
+        return templates.TemplateResponse(
+            "partials/top.html",
+            {"request": request, "top": top, "cfg": cfg, "config_path": str(loaded.path)},
+        )
 
     @app.get("/partials/queue", response_class=HTMLResponse)
     def partial_queue(request: Request):
         with db.connect(cfg.app.db_path) as con:
             db.init_db(con)
             queue = _db_rows_to_dicts(db.list_outreach_queue(con, status=None))[-50:]
-        return templates.TemplateResponse("partials/queue.html", {"request": request, "queue": queue})
+        return templates.TemplateResponse(
+            "partials/queue.html",
+            {"request": request, "queue": queue, "cfg": cfg, "config_path": str(loaded.path)},
+        )
 
     @app.get("/leads", response_class=HTMLResponse)
     def leads(request: Request):
         with db.connect(cfg.app.db_path) as con:
             db.init_db(con)
             rows = _db_rows_to_dicts(db.list_leads_with_scores(con))
-        return templates.TemplateResponse("leads.html", {"request": request, "rows": rows})
+        return templates.TemplateResponse(
+            "leads.html",
+            {"request": request, "rows": rows, "cfg": cfg, "config_path": str(loaded.path)},
+        )
 
     @app.get("/lead/{lead_id}", response_class=HTMLResponse)
     def lead_detail(request: Request, lead_id: int):
@@ -93,10 +102,27 @@ def create_app(config_path: str | None = None) -> FastAPI:
             acts = _db_rows_to_dicts(db.list_activities(con, lead_id=lead_id, limit=100))
             out = _db_rows_to_dicts(db.list_outreach_for_lead(con, lead_id=lead_id, limit=100))
         if lead is None:
-            return templates.TemplateResponse("not_found.html", {"request": request, "kind": "Lead", "id": lead_id})
+            return templates.TemplateResponse(
+                "not_found.html",
+                {
+                    "request": request,
+                    "kind": "Lead",
+                    "id": lead_id,
+                    "cfg": cfg,
+                    "config_path": str(loaded.path),
+                },
+            )
         return templates.TemplateResponse(
             "lead.html",
-            {"request": request, "lead": dict(lead), "score": dict(score) if score else None, "activities": acts, "outreach": out},
+            {
+                "request": request,
+                "lead": dict(lead),
+                "score": dict(score) if score else None,
+                "activities": acts,
+                "outreach": out,
+                "cfg": cfg,
+                "config_path": str(loaded.path),
+            },
         )
 
     @app.get("/activity", response_class=HTMLResponse)
@@ -104,11 +130,16 @@ def create_app(config_path: str | None = None) -> FastAPI:
         with db.connect(cfg.app.db_path) as con:
             db.init_db(con)
             acts = _db_rows_to_dicts(db.list_activities(con, lead_id=None, limit=200))
-        return templates.TemplateResponse("activity.html", {"request": request, "activities": acts})
+        return templates.TemplateResponse(
+            "activity.html",
+            {"request": request, "activities": acts, "cfg": cfg, "config_path": str(loaded.path)},
+        )
 
     @app.get("/dnc", response_class=HTMLResponse)
     def dnc_page(request: Request):
-        return templates.TemplateResponse("dnc.html", {"request": request})
+        return templates.TemplateResponse(
+            "dnc.html", {"request": request, "cfg": cfg, "config_path": str(loaded.path)}
+        )
 
     @app.post("/dnc/add")
     def dnc_add(kind: str = Form(...), value: str = Form(...), reason: str | None = Form(default=None)):

@@ -29,6 +29,16 @@ cp .env.example .env
 python3 -m wholesale run --config ./config.yaml
 ```
 
+### Live local web dashboard
+
+Start the dashboard:
+
+```bash
+python3 -m wholesale web --config ./config.yaml --host 127.0.0.1 --port 8000
+```
+
+Then open `http://127.0.0.1:8000` and click **Run now** to refresh the business state. The tables auto-refresh every few seconds.
+
 ### Bring your own leads (CSV)
 
 Create a CSV with these headers (see `data/sample_leads.csv`):

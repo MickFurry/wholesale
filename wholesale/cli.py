@@ -83,6 +83,11 @@ def build_parser() -> argparse.ArgumentParser:
     top = sub.add_parser("top", help="Show top opportunities")
     top.add_argument("--limit", type=int, default=10)
 
+    web = sub.add_parser("web", help="Run local web dashboard (FastAPI)")
+    web.add_argument("--host", default="127.0.0.1")
+    web.add_argument("--port", type=int, default=8000)
+    web.add_argument("--reload", action="store_true", help="Auto-reload on code changes")
+
     return p
 
 
@@ -112,10 +117,31 @@ def _print_top(console: Console, rows: list[dict]) -> None:
     console.print(t)
 
 
+def _run_web_server(config_path: str, host: str, port: int, reload: bool) -> int:
+    import uvicorn
+
+    # Create the app with the chosen config path.
+    os.environ["WHOLESALE_CONFIG_PATH"] = config_path
+    uvicorn.run(
+        "wholesale.web.app:app",
+        host=host,
+        port=port,
+        reload=reload,
+        log_level="info",
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     load_dotenv()
     args = build_parser().parse_args(_normalize_argv(argv))
     console = _console()
+
+    # `web` is long-running, so handle it before opening DB connections.
+    if args.cmd == "web":
+        config_path = args.config
+        console.print(f"Starting dashboard on [bold]http://{args.host}:{args.port}[/bold]")
+        return _run_web_server(config_path=config_path, host=args.host, port=args.port, reload=args.reload)
 
     loaded = load_config(args.config)
     cfg = loaded.config
