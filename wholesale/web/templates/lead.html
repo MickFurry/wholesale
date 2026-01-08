@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% set title = "Lead " ~ lead.id %}
+
+{% block content %}
+  <section class="card">
+    <div class="card-header">
+      <h2>Lead #{{ lead.id }}</h2>
+      <div class="muted">{{ lead.property_address }}, {{ lead.property_city }} {{ lead.property_state }} {{ lead.property_zip }}</div>
+    </div>
+    <div class="kv">
+      <div><span class="k">Owner</span> <span class="v">{{ lead.owner_name or "" }}</span></div>
+      <div><span class="k">Email</span> <span class="v muted">{{ lead.owner_email or "" }}</span></div>
+      <div><span class="k">Phone</span> <span class="v muted">{{ lead.owner_phone or "" }}</span></div>
+      <div><span class="k">Signals</span> <span class="v muted">{{ lead.distress_signals or "" }}</span></div>
+      <div><span class="k">Occupancy</span> <span class="v">{{ lead.occupancy or "" }}</span></div>
+      <div><span class="k">ARV</span> <span class="v">{{ lead.estimated_arv or "" }}</span></div>
+      <div><span class="k">Mortgage</span> <span class="v">{{ lead.estimated_mortgage_balance or "" }}</span></div>
+      <div><span class="k">Repairs</span> <span class="v">{{ lead.estimated_repairs or "" }}</span></div>
+    </div>
+  </section>
+
+  <div class="grid-2">
+    <section class="card">
+      <div class="card-header">
+        <h2>Score</h2>
+      </div>
+      {% if score %}
+        <div class="kv">
+          <div><span class="k">Score</span> <span class="v"><code>{{ "%.3f"|format(score.score or 0) }}</code></span></div>
+          <div><span class="k">Category</span> <span class="v">{{ score.category }}</span></div>
+          <div><span class="k">Scored at</span> <span class="v muted">{{ score.scored_at }}</span></div>
+          <div><span class="k">Subscores</span> <span class="v muted"><code style="white-space: pre-wrap">{{ score.subscores_json }}</code></span></div>
+        </div>
+      {% else %}
+        <div class="muted">Not scored yet.</div>
+      {% endif %}
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Outreach</h2>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Channel</th>
+            <th>To</th>
+            <th>Status</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if outreach and outreach|length > 0 %}
+            {% for o in outreach %}
+              <tr>
+                <td><code>{{ o.id }}</code></td>
+                <td>{{ o.channel }}</td>
+                <td class="muted">{{ o.to_value }}</td>
+                <td>{{ o.status }}</td>
+                <td class="muted">{{ o.created_at }}</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr><td colspan="5" class="muted">No outreach queued.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="card-header">
+      <h2>Activity</h2>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Details</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if activities and activities|length > 0 %}
+          {% for a in activities %}
+            <tr>
+              <td><code>{{ a.id }}</code></td>
+              <td>{{ a.type }}</td>
+              <td class="muted"><code style="white-space: pre-wrap">{{ a.details_json }}</code></td>
+              <td class="muted">{{ a.created_at }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="4" class="muted">No activity yet.</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}
+

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% set active = "leads" %}
+{% set title = "Leads" %}
+
+{% block content %}
+  <section class="card">
+    <div class="card-header">
+      <h2>Leads</h2>
+      <div class="muted">Sorted by score (desc)</div>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Score</th>
+          <th>Category</th>
+          <th>Owner</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Property</th>
+          <th>Signals</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if rows and rows|length > 0 %}
+          {% for r in rows %}
+            <tr>
+              <td><a href="/lead/{{ r.id }}">{{ r.id }}</a></td>
+              <td><code>{{ "%.3f"|format(r.score or 0) }}</code></td>
+              <td>{{ r.category or "" }}</td>
+              <td>{{ r.owner_name or "" }}</td>
+              <td class="muted">{{ r.owner_email or "" }}</td>
+              <td class="muted">{{ r.owner_phone or "" }}</td>
+              <td>{{ r.property_address or "" }}</td>
+              <td class="muted">{{ r.distress_signals or "" }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="8" class="muted">No leads yet. Run the pipeline.</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}
+

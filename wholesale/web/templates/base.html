@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title or "Wholesale Dashboard" }}</title>
+    <link rel="stylesheet" href="/static/app.css" />
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-title">Wholesale Dashboard</div>
+        <div class="brand-sub">Local UI (dry-run safe by default)</div>
+      </div>
+      <nav class="nav">
+        <a href="/" class="{% if active == 'home' %}active{% endif %}">Dashboard</a>
+        <a href="/leads" class="{% if active == 'leads' %}active{% endif %}">Leads</a>
+        <a href="/activity" class="{% if active == 'activity' %}active{% endif %}">Activity</a>
+        <a href="/dnc" class="{% if active == 'dnc' %}active{% endif %}">DNC</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+      DB: <code>{{ cfg.app.db_path }}</code> • Config: <code>{{ config_path }}</code> • Dry-run: <code>{{ cfg.app.dry_run }}</code>
+    </footer>
+  </body>
+</html>
+

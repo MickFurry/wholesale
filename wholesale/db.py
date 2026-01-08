@@ -193,6 +193,52 @@ def list_leads(con: sqlite3.Connection) -> list[sqlite3.Row]:
     return list(con.execute("SELECT * FROM leads ORDER BY id DESC"))
 
 
+def list_leads_with_scores(con: sqlite3.Connection) -> list[sqlite3.Row]:
+    return list(
+        con.execute(
+            """
+            SELECT l.*, s.score, s.category
+            FROM leads l
+            LEFT JOIN scores s ON s.lead_id = l.id
+            ORDER BY COALESCE(s.score, 0) DESC, l.id DESC
+            """
+        )
+    )
+
+
+def get_lead(con: sqlite3.Connection, lead_id: int) -> sqlite3.Row | None:
+    return con.execute("SELECT * FROM leads WHERE id=?", (lead_id,)).fetchone()
+
+
+def get_score(con: sqlite3.Connection, lead_id: int) -> sqlite3.Row | None:
+    return con.execute("SELECT * FROM scores WHERE lead_id=?", (lead_id,)).fetchone()
+
+
+def list_activities(con: sqlite3.Connection, lead_id: int | None, limit: int = 200) -> list[sqlite3.Row]:
+    if lead_id is None:
+        return list(
+            con.execute(
+                "SELECT * FROM activities ORDER BY id DESC LIMIT ?",
+                (limit,),
+            )
+        )
+    return list(
+        con.execute(
+            "SELECT * FROM activities WHERE lead_id=? ORDER BY id DESC LIMIT ?",
+            (lead_id, limit),
+        )
+    )
+
+
+def list_outreach_for_lead(con: sqlite3.Connection, lead_id: int, limit: int = 200) -> list[sqlite3.Row]:
+    return list(
+        con.execute(
+            "SELECT * FROM outreach_queue WHERE lead_id=? ORDER BY id DESC LIMIT ?",
+            (lead_id, limit),
+        )
+    )
+
+
 def set_lead_status(con: sqlite3.Connection, lead_id: int, status: str) -> None:
     con.execute(
         "UPDATE leads SET status=?, updated_at=? WHERE id=?",

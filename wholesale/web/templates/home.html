@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% set active = "home" %}
+{% set title = "Dashboard" %}
+
+{% block content %}
+  <div class="grid">
+    <section class="card">
+      <div class="card-header">
+        <h2>Run pipeline</h2>
+        <div class="muted">Imports → scores → queues outreach → exports checklists</div>
+      </div>
+      <form method="post" action="/actions/run-pipeline" class="row">
+        <label>
+          Sender name
+          <input name="sender_name" value="Alex" />
+        </label>
+        <button type="submit" class="primary">Run now</button>
+      </form>
+      <div class="muted small">
+        Notes: sending stays off unless you explicitly enable live sending in <code>config.yaml</code>.
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Top opportunities</h2>
+        <div class="muted">Auto-refreshes every 3s</div>
+      </div>
+      <div
+        hx-get="/partials/top"
+        hx-trigger="load, every 3s"
+        hx-swap="innerHTML"
+      >
+        {% include "partials/top.html" %}
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Outreach queue (latest)</h2>
+        <div class="muted">Auto-refreshes every 3s</div>
+      </div>
+      <div
+        hx-get="/partials/queue"
+        hx-trigger="load, every 3s"
+        hx-swap="innerHTML"
+      >
+        {% include "partials/queue.html" %}
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
