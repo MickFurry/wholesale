@@ -1,0 +1,28 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Score</th>
+      <th>Category</th>
+      <th>Owner</th>
+      <th>Property</th>
+      <th>Signals</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if top and top|length > 0 %}
+      {% for r in top %}
+        <tr>
+          <td><a href="/lead/{{ r.id }}">{{ r.id }}</a></td>
+          <td><code>{{ "%.3f"|format(r.score or 0) }}</code></td>
+          <td>{{ r.category or "" }}</td>
+          <td>{{ r.owner_name or "" }}</td>
+          <td>{{ r.property_address or "" }}</td>
+          <td class="muted">{{ r.distress_signals or "" }}</td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      <tr><td colspan="6" class="muted">No scored leads yet. Click “Run now”.</td></tr>
+    {% endif %}
+  </tbody>
+</table>

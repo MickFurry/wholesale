@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% set active = "activity" %}
+{% set title = "Activity" %}
+
+{% block content %}
+  <section class="card">
+    <div class="card-header">
+      <h2>Activity log</h2>
+      <div class="muted">Latest 200 events</div>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Lead</th>
+          <th>Type</th>
+          <th>Details</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if activities and activities|length > 0 %}
+          {% for a in activities %}
+            <tr>
+              <td><code>{{ a.id }}</code></td>
+              <td><a href="/lead/{{ a.lead_id }}">{{ a.lead_id }}</a></td>
+              <td>{{ a.type }}</td>
+              <td class="muted"><code style="white-space: pre-wrap">{{ a.details_json }}</code></td>
+              <td class="muted">{{ a.created_at }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="5" class="muted">No activity yet.</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}
+

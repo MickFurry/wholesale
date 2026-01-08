@@ -1,0 +1,28 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Lead</th>
+      <th>Channel</th>
+      <th>To</th>
+      <th>Status</th>
+      <th>Created</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if queue and queue|length > 0 %}
+      {% for m in queue %}
+        <tr>
+          <td><code>{{ m.id }}</code></td>
+          <td><a href="/lead/{{ m.lead_id }}">{{ m.lead_id }}</a></td>
+          <td>{{ m.channel }}</td>
+          <td class="muted">{{ m.to_value }}</td>
+          <td>{{ m.status }}</td>
+          <td class="muted">{{ m.created_at }}</td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      <tr><td colspan="6" class="muted">No outreach queued yet.</td></tr>
+    {% endif %}
+  </tbody>
+</table>

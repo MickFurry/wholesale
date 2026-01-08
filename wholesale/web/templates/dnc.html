@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% set active = "dnc" %}
+{% set title = "DNC" %}
+
+{% block content %}
+  <section class="card">
+    <div class="card-header">
+      <h2>Do Not Contact (DNC)</h2>
+      <div class="muted">Add entries to block outreach by email/phone.</div>
+    </div>
+
+    <form method="post" action="/dnc/add" class="row">
+      <label>
+        Kind
+        <select name="kind">
+          <option value="email">email</option>
+          <option value="phone">phone</option>
+        </select>
+      </label>
+      <label>
+        Value
+        <input name="value" placeholder="jane@example.com or +15551234567" required />
+      </label>
+      <label>
+        Reason (optional)
+        <input name="reason" placeholder="Requested opt-out" />
+      </label>
+      <button type="submit" class="primary">Add DNC</button>
+    </form>
+
+    <div class="muted small">
+      Tip: you can also add via CLI:
+      <code>python3 -m wholesale add-dnc --config ./config.yaml --kind email --value ...</code>
+    </div>
+  </section>
+{% endblock %}
+
